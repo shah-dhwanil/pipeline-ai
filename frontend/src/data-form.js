@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import {
     Box,
-    TextField,
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
     Button,
 } from '@mui/material';
 import axios from 'axios';
@@ -22,22 +26,46 @@ export const DataForm = ({ integrationType, credentials }) => {
             formData.append('credentials', JSON.stringify(credentials));
             const response = await axios.post(`https://super-duper-spoon-rw5v4gqvpj52xj6q-8000.app.github.dev/integrations/${endpoint}`, formData);
             const data = response.data;
-            setLoadedData(JSON.stringify(data, null, 2));
+            console.log(data)
+            setLoadedData(Array.isArray(data) ? data : [data]);
         } catch (e) {
             alert(e?.response?.data?.detail);
         }
     }
 
+    const columns = loadedData
+        ? [...new Set(loadedData.flatMap((row) => Object.keys(row || {})))]
+        : [];
+
+    const formatValue = (value) => {
+        if (value === null || value === undefined) return '';
+        if (typeof value === 'object') return JSON.stringify(value);
+        return String(value);
+    }
+
     return (
         <Box display='flex' justifyContent='center' alignItems='center' flexDirection='column' width='100%'>
-            <Box display='flex' flexDirection='column' width='100%'>
-                <TextField
-                    label="Loaded Data"
-                    value={loadedData || ''}
-                    sx={{mt: 2}}
-                    InputLabelProps={{ shrink: true }}
-                    disabled
-                />
+            <Box display='flex' flexDirection='column' alignItems='center' width='100%'>
+                {loadedData && (
+                    <Table sx={{ mt: 2, border: 1, borderColor: 'grey.300' }} size='small'>
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((col) => (
+                                    <TableCell key={col} sx={{ fontWeight: 'bold' }}>{col}</TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {loadedData.map((row, i) => (
+                                <TableRow key={i}>
+                                    {columns.map((col) => (
+                                        <TableCell key={col}>{formatValue(row[col])}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                )}
                 <Button
                     onClick={handleLoad}
                     sx={{mt: 2}}
