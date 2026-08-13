@@ -10,13 +10,13 @@ import base64
 import requests
 from integrations.integration_item import IntegrationItem
 from os import environ
-
+import urllib.parse
 from redis_client import add_key_value_redis, get_value_redis, delete_key_redis
 
 CLIENT_ID = environ.get("HUBSPOT_CLIENT_ID") if environ.get("HUBSPOT_CLIENT_ID",None)is not  None else 'xxx'
 CLIENT_SECRET = environ.get("HUBSPOT_CLIENT_SECRET") if environ.get("HUBSPOT_CLIENT_SECRET",None)is not None else 'xxx'
-REDIRECT_URI = 'https://super-duper-spoon-rw5v4gqvpj52xj6q-8000.app.github.dev/integrations/hubspot/oauth2callback'
-authorization_url = f'https://app.hubspot.com/oauth/authorize?client_id={CLIENT_ID}&redirect_uri=https%3A%2F%2Fsuper-duper-spoon-rw5v4gqvpj52xj6q-8000.app.github.dev%2Fintegrations%2Fhubspot%2Foauth2callback'
+REDIRECT_URI = environ.get("HUBSPOT_REDIRECT_URI") if environ.get("HUBSPOT_REDIRECT_URI",None)is not None else 'http://localhost:8000/integrations/hubspot/oauth2callback'
+authorization_url = f'https://app.hubspot.com/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={urllib.parse.quote_plus(REDIRECT_URI)}'
 scope = 'crm.objects.contacts.read crm.objects.companies.read crm.objects.deals.read'
 
 async def authorize_hubspot(user_id, org_id):
