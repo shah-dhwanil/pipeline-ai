@@ -9,6 +9,7 @@ import {
     Button,
 } from '@mui/material';
 import axios from 'axios';
+import { API_BASE_URL } from './config';
 
 const endpointMapping = {
     'Notion': 'notion/load',
@@ -24,7 +25,7 @@ export const DataForm = ({ integrationType, credentials }) => {
         try {
             const formData = new FormData();
             formData.append('credentials', JSON.stringify(credentials));
-            const response = await axios.post(`https://super-duper-spoon-rw5v4gqvpj52xj6q-8000.app.github.dev/integrations/${endpoint}`, formData);
+            const response = await axios.post(`${API_BASE_URL}/integrations/${endpoint}`, formData);
             const data = response.data;
             console.log(data)
             setLoadedData(Array.isArray(data) ? data : [data]);

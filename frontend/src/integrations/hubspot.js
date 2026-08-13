@@ -7,6 +7,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 export const HubspotIntegration = ({ user, org, integrationParams, setIntegrationParams }) => {
     const [isConnected, setIsConnected] = useState(false);
@@ -19,7 +20,7 @@ export const HubspotIntegration = ({ user, org, integrationParams, setIntegratio
             const formData = new FormData();
             formData.append('user_id', user);
             formData.append('org_id', org);
-            const response = await axios.post(`https://super-duper-spoon-rw5v4gqvpj52xj6q-8000.app.github.dev/integrations/hubspot/authorize`, formData);
+            const response = await axios.post(`${API_BASE_URL}/integrations/hubspot/authorize`, formData);
             const authURL = response?.data;
 
             const newWindow = window.open(authURL, 'HubSpot Authorization', 'width=600, height=600');
@@ -43,7 +44,7 @@ export const HubspotIntegration = ({ user, org, integrationParams, setIntegratio
             const formData = new FormData();
             formData.append('user_id', user);
             formData.append('org_id', org);
-            const response = await axios.post(`https://super-duper-spoon-rw5v4gqvpj52xj6q-8000.app.github.dev/integrations/hubspot/credentials`, formData);
+            const response = await axios.post(`${API_BASE_URL}/integrations/hubspot/credentials`, formData);
             const credentials = response.data; 
             if (credentials) {
                 setIsConnecting(false);
