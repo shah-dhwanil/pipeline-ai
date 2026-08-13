@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@upstash/context7-tools-ai-sdk": "^0.2.5"
+  }
+}
